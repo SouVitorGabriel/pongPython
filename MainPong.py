@@ -6,16 +6,25 @@ janela = Window(1024, 576)
 teclado = Window.get_keyboard()
 
 #configurações
-ballVely = 350
-BallVelx = 450
 velpad = 400
 velpadEnemy = 200
+
+#configs bola1
+ballVely = 350
+BallVelx = 450
 
 bola = Sprite ("bola2.png", 8)
 bola.set_sequence_time(0,7, 1, True)
 
-balls = [bola]
+#configs bola2
+ball2Vely = 350
+Ball2Velx = -450
 
+bola2 = Sprite ("bola3.png", 8)
+
+bola2.set_sequence_time(0,7, 1, True)
+
+#configs pads
 pad1 = Sprite ("pad.jpg", 1)
 pad1.width = 30
 pad1.x = 10
@@ -27,9 +36,10 @@ pad2.x = janela.width - pad2.width - 10
 
 iaPad1 = True
 
+bola2InGame =  True
+
 pointsPlayer1 = 0
 pointsPlayer2 = 0
-
 
 level = 0
 
@@ -68,8 +78,13 @@ while (1):
 
     #IA
     if(iaPad1):
-        if(bola.x < janela.width / 2):
-            if(bola.y > pad1.y):
+        if(bola.x < bola2.x):
+            bolaToFollow = bola
+        else:
+            bolaToFollow = bola2
+
+        if(bolaToFollow.x < janela.width / 2):
+            if(bolaToFollow.y > pad1.y):
                 pad1.y += 2 + velpadEnemy * janela.delta_time()
             else:
                 pad1.y -= 0.5 + velpadEnemy * janela.delta_time()
@@ -95,9 +110,9 @@ while (1):
 
     #UPDATES
 
-    
     bola.x +=BallVelx*janela.delta_time()
     bola.y += ballVely*janela.delta_time()
+
     if (bola.x >= janela.width - bola.width)or(bola.x < 0):
         if (bola.x >= janela.width - bola.width):
             pointsPlayer1 += 1
@@ -111,24 +126,45 @@ while (1):
 
     bola.update()
 
+    if (bola2InGame):
+        bola2.x += Ball2Velx*janela.delta_time()
+        bola2.y += ball2Vely*janela.delta_time()
+
+        if (bola2.x >= janela.width - bola2.width)or(bola2.x < 0):
+            if (bola2.x >= janela.width - bola2.width):
+                pointsPlayer1 += 1
+            if (bola2.x < 0):
+                pointsPlayer2 += 1
+            bola2.x = janela.width/2
+            bola2.y = janela.height/2
+            Ball2Velx *= -1
+        if (bola2.y >= janela.height - bola2.height) or (bola2.y < 0):
+            ball2Vely *= -1
+
+        bola2.update()
+
+
     #FISICA
     if bola.collided(pad1) or bola.collided(pad2):
         BallVelx *= -1
+        level += 1
+    if bola2.collided(pad1) or bola2.collided(pad2):
+        Ball2Velx *= -1
+        level += 1
 
     #DESENHO
     janela.set_background_color((0, 0, 0))
     janela.draw_text("{} pontos".format(pointsPlayer2) , 535, 5, 20, (255,255,255), "Arial", True)
     janela.draw_text("{} pontos".format(pointsPlayer1) , 405, 5, 20, (255,255,255), "Arial", True)
-    janela.draw_text("Tempo de jogo: {} seg.".format(time) , 525, janela.height - 25, 20, (255,255,255), "Arial", True)
+    janela.draw_text("Tempo de jogo: {} seg.".format(level) , 525, janela.height - 25, 20, (255,255,255), "Arial", True)
     sceneCenter.draw()
-
 
     pad1.draw()
     pad2.draw()
+
     bola.draw()
-
     
-
-
+    if (bola2InGame):
+        bola2.draw()
 
     janela.update()
