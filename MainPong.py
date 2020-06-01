@@ -10,27 +10,34 @@ velpad = 400
 velpadEnemy = 200
 
 #configs bola1
-ballVely = 250
+ballVely = -250
 BallVelx = 350
 
 bola = Sprite ("bola2.png", 8)
 bola.set_sequence_time(0,7, 1, True)
+
+bola.x = 300
+bola.y = 500
 
 #configs bola2
 ball2Vely = 450
 Ball2Velx = -500
 
 bola2 = Sprite ("bola3.png", 8)
-
 bola2.set_sequence_time(0,7, 1, True)
+
+bola2.x = janela.width/2
+bola2.y = janela.height/2
 
 #configs pads
 pad1 = Sprite ("pad.jpg", 1)
 pad1.width = 30
-pad1.x = 10
+
+
 
 pad2 = Sprite ("pad.jpg", 1)
 pad2.width = 30
+
 
 pad2.x = janela.width - pad2.width - 10
 
@@ -113,8 +120,8 @@ while (1):
     bola.x +=BallVelx*janela.delta_time()
     bola.y += ballVely*janela.delta_time()
 
-    if (bola.x >= janela.width - bola.width)or(bola.x < 0):
-        if (bola.x >= janela.width - bola.width):
+    if (bola.x > janela.width) or (bola.x < 0):
+        if (bola.x > janela.width):
             pointsPlayer1 += 1
         if (bola.x < 0):
             pointsPlayer2 += 1
@@ -131,13 +138,14 @@ while (1):
         bola2.y += ball2Vely*janela.delta_time()
 
         if (bola2.x >= janela.width - bola2.width)or(bola2.x < 0):
-            if (bola2.x >= janela.width - bola2.width):
+            if (bola2.x > janela.width - bola2.width):
                 pointsPlayer1 += 1
             if (bola2.x < 0):
                 pointsPlayer2 += 1
             bola2.x = janela.width/2
             bola2.y = janela.height/2
             Ball2Velx *= -1
+            level = 0
             bola2InGame = False
         if (bola2.y >= janela.height - bola2.height) or (bola2.y < 0):
             ball2Vely *= -1
@@ -147,9 +155,17 @@ while (1):
 
     #FISICA
     if bola.collided(pad1) or bola.collided(pad2):
+        if (bola.collided(pad1)):
+            bola.x = bola.x + bola.width / 2
+        else:
+            bola.x = bola.x - bola.width / 2
         BallVelx *= -1
         level += 1
     if bola2.collided(pad1) or bola2.collided(pad2):
+        if (bola2.collided(pad1)):
+            bola2.x = bola2.x + bola2.width / 2
+        else:
+            bola2.x = bola2.x - bola2.width / 2
         Ball2Velx *= -1
         level += 1
 
@@ -162,6 +178,7 @@ while (1):
     janela.draw_text("{} pontos".format(pointsPlayer2) , 535, 5, 20, (255,255,255), "Arial", True)
     janela.draw_text("{} pontos".format(pointsPlayer1) , 405, 5, 20, (255,255,255), "Arial", True)
     janela.draw_text("Tempo de jogo: {} seg.".format(time) , 525, janela.height - 25, 20, (255,255,255), "Arial", True)
+    janela.draw_text("Rebatidas: {}".format(level) , 525, janela.height - 45, 20, (255,255,255), "Arial", True)
     sceneCenter.draw()
 
     pad1.draw()
