@@ -10,15 +10,15 @@ velpad = 400
 velpadEnemy = 200
 
 #configs bola1
-ballVely = 350
-BallVelx = 450
+ballVely = 250
+BallVelx = 350
 
 bola = Sprite ("bola2.png", 8)
 bola.set_sequence_time(0,7, 1, True)
 
 #configs bola2
-ball2Vely = 350
-Ball2Velx = -450
+ball2Vely = 450
+Ball2Velx = -500
 
 bola2 = Sprite ("bola3.png", 8)
 
@@ -36,7 +36,7 @@ pad2.x = janela.width - pad2.width - 10
 
 iaPad1 = True
 
-bola2InGame =  True
+bola2InGame =  False
 
 pointsPlayer1 = 0
 pointsPlayer2 = 0
@@ -138,6 +138,7 @@ while (1):
             bola2.x = janela.width/2
             bola2.y = janela.height/2
             Ball2Velx *= -1
+            bola2InGame = False
         if (bola2.y >= janela.height - bola2.height) or (bola2.y < 0):
             ball2Vely *= -1
 
@@ -152,11 +153,15 @@ while (1):
         Ball2Velx *= -1
         level += 1
 
+    if(level > 3):
+        bola2InGame = True
+        level = 0
+
     #DESENHO
     janela.set_background_color((0, 0, 0))
     janela.draw_text("{} pontos".format(pointsPlayer2) , 535, 5, 20, (255,255,255), "Arial", True)
     janela.draw_text("{} pontos".format(pointsPlayer1) , 405, 5, 20, (255,255,255), "Arial", True)
-    janela.draw_text("Tempo de jogo: {} seg.".format(level) , 525, janela.height - 25, 20, (255,255,255), "Arial", True)
+    janela.draw_text("Tempo de jogo: {} seg.".format(time) , 525, janela.height - 25, 20, (255,255,255), "Arial", True)
     sceneCenter.draw()
 
     pad1.draw()
